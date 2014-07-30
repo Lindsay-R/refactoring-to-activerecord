@@ -36,12 +36,13 @@ class App < Sinatra::Application
 
   post "/registrations" do
     if validate_registration_params
-      insert_sql = <<-SQL
-      INSERT INTO users (username, password)
-      VALUES ('#{params[:username]}', '#{params[:password]}')
-      SQL
-
-      @database_connection.sql(insert_sql)
+      User.create(username: params[:username], password: params[:password])
+      # insert_sql = <<-SQL
+      # INSERT INTO users (username, password)
+      # VALUES ('#{params[:username]}', '#{params[:password]}')
+      # SQL
+      #
+      # @database_connection.sql(insert_sql)
 
       flash[:notice] = "Thanks for registering"
       redirect "/"
