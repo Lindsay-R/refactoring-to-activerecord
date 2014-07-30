@@ -193,22 +193,26 @@ class App < Sinatra::Application
   end
 
   def authenticate_user
-    select_sql = <<-SQL
-    SELECT * FROM users
-    WHERE username = '#{params[:username]}' AND password = '#{params[:password]}'
-    SQL
 
-    @database_connection.sql(select_sql).first
+    User.where(username: params[:username], password: params[:password]).first
+    # select_sql = <<-SQL
+    # SELECT * FROM users
+    # WHERE username = '#{params[:username]}' AND password = '#{params[:password]}'
+    # SQL
+    #
+    # @database_connection.sql(select_sql).first
   end
 
   def current_user
     if session[:user_id]
-      select_sql = <<-SQL
-      SELECT * FROM users
-      WHERE id = #{session[:user_id]}
-      SQL
 
-      @database_connection.sql(select_sql).first
+      User.where(id: session[:user_id]).first
+      # select_sql = <<-SQL
+      # SELECT * FROM users
+      # WHERE id = #{session[:user_id]}
+      # SQL
+      #
+      # @database_connection.sql(select_sql).first
     else
       nil
     end
