@@ -19,11 +19,11 @@ class App < Sinatra::Application
 
     if current_user
 
-      users = User.where.not(id: "#{user["id"]}")
+      users = User.where.not(id: user[:id])
       # p User.where.not(id: "#{user["id"]}").to_sql
       # users = @database_connection.sql("SELECT * FROM users WHERE id != #{user["id"]}")
 
-      fish = Fish.where(user_id: "#{current_user["id"]}")
+      fish = Fish.where(user_id: user[:id])
       # fish = @database_connection.sql("SELECT * FROM fish WHERE user_id = #{current_user["id"]}")
 
       erb :signed_in, locals: {current_user: user, users: users, fish_list: fish}
@@ -37,7 +37,7 @@ class App < Sinatra::Application
   end
 
   post "/registrations" do
-    if validate_registration_params
+    if validate_registration_params  ###this will be referenced from user.rb
 
       User.create(username: params[:username], password: params[:password])
       # insert_sql = <<-SQL
@@ -75,7 +75,7 @@ class App < Sinatra::Application
 
   delete "/users/:id" do
 
-    user = User.where(id: "#{params[:id]}").first
+    user = User.find(params[:id])
     user.destroy
     # delete_sql = <<-SQL
     # DELETE FROM users
@@ -92,7 +92,7 @@ class App < Sinatra::Application
   end
 
   get "/fish/:id" do
-    fish = Fish.where(id: "#{params[:id]}")
+    fish = Fish.find(params[:id])
     # fish = @database_connection.sql("SELECT * FROM fish WHERE id = #{params[:id]}").first
     erb :"fish/show", locals: {fish: fish}
   end
@@ -100,7 +100,7 @@ class App < Sinatra::Application
   post "/fish" do
     if validate_fish_params
 
-      Fish.create(name: params[:name], wikipedia_page: params[:wikipedia_page], user_id: current_user["id"])
+      Fish.create(name: params[:name], wikipedia_page: params[:wikipedia_page], user_id: current_user[:id])
 
       # insert_sql = <<-SQL
       # INSERT INTO fish (name, wikipedia_page, user_id)
@@ -119,6 +119,7 @@ class App < Sinatra::Application
 
   private
 
+  ###this will be deleted and added in the user.rb then referenced in the method above(top)
   def validate_registration_params
     if params[:username] != "" && params[:password].length > 3 && username_available?(params[:username])
       return true
