@@ -1,6 +1,15 @@
 <h2>New Fish</h2>
 
 <form action="/fish" method="post">
+
+  <% if fish.errors.any? %>
+    <ul>
+      <% fish.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
   <ul>
     <li>
       <label for="name">Name</label>
